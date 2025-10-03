@@ -10,11 +10,54 @@ A flexible Docker setup for ROS2 Humble that supports both AMD64 and ARM64 archi
 - USB device access
 - Configurable image names for different projects
 
+## Tested Platforms
+
+| Platform         | Architecture    | Status            | Notes            |
+| ---------------- | --------------- | ----------------- | ---------------- |
+| Ubuntu 22.04     | x86_64 (amd64)  | ✅ Tested         | Full GUI support |
+| Jetson Orin nano | aarch64 (arm64) | ✅ Tested         | Should work      |
+| Raspberry Pi 4/5 | aarch64 (arm64) | ⚠️ Not tested yet | Should work      |
+
 ## Prerequisites
 
 - Docker installed
-- Linux host (for X11 support)
-- `xhost` command available
+
+**Jetson Orin nano:**
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo usermod -aG docker $USER
+# Log out and back in for group changes to take effect
+```
+
+**Raspberry Pi 4/5:**
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+# Log out and back in for group changes to take effect
+```
+
+## Quick Start
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd ros2-humble-multiarch
+
+# 2. Build the Docker image
+./build.sh
+
+# 3. Run a container
+./run.sh my_robot
+
+# 4. Inside the container, test ROS2
+ros2 topic list
+ros2 run demo_nodes_cpp talker
+
+# 5. Test GUI support (in another terminal)
+./attach.sh my_robot
+xeyes  # Should display a GUI window
+```
 
 ## File Structure
 
@@ -121,6 +164,7 @@ The Dockerfile creates a user with the same UID/GID as your host user:
 - ROS2 Humble Desktop Full
 - Python 3 with pip
 - PlotJuggler (ROS visualization tool)
+- x11-apps (includes xeyes for X11 testing)
 
 ## Multi-User Setup
 
